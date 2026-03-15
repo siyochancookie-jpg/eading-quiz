@@ -3,144 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S6 English Interactive Quiz</title>
+    <title>S6 English Reading Quiz - Chairoikoguma Theme</title>
     <style>
-        :root { --primary: #2c3e50; --secondary: #3498db; --success: #27ae60; --error: #e74c3c; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f7f6; padding: 15px; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h1 { color: var(--primary); text-align: center; border-bottom: 2px solid var(--secondary); padding-bottom: 10px; }
-        .q-block { margin-bottom: 25px; padding: 15px; border-left: 5px solid var(--secondary); background: #fafafa; border-radius: 0 8px 8px 0; }
+        /* Chairoikoguma & Blue Wolf Theme Colors */
+        :root { 
+            --dark-brown: #5d4037;   /* Chairoikoguma brown */
+            --light-blue: #a1d6f5;   /* Blue Wolf light blue */
+            --warm-white: #fffcf5;   /* Background */
+            --success: #8bc34a; 
+            --error: #ff7043;
+        }
+        
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background-color: var(--light-blue); 
+            margin: 0; 
+            padding: 15px;
+            color: var(--dark-brown);
+        }
+
+        .container { 
+            max-width: 650px; 
+            margin: auto; 
+            background: var(--warm-white); 
+            padding: 25px; 
+            border-radius: 20px; 
+            box-shadow: 0 8px 20px rgba(93, 64, 55, 0.2);
+            border: 4px solid var(--dark-brown);
+        }
+
+        h1 { 
+            text-align: center; 
+            font-size: 26px; 
+            color: var(--dark-brown);
+            border-bottom: 3px dashed var(--light-blue);
+            padding-bottom: 10px;
+        }
+
+        /* Welcome Screen */
+        #welcome-screen { 
+            text-align: center; 
+            padding: 50px 10px; 
+        }
+
+        #quiz-content { display: none; }
+
+        .q-block { 
+            margin-bottom: 25px; 
+            padding: 15px; 
+            background: white; 
+            border-radius: 15px; 
+            border: 2px solid var(--light-blue);
+        }
+
         .options { list-style: none; padding: 0; }
-        .options li { margin: 10px 0; padding: 8px; border-radius: 5px; border: 1px solid #eee; }
-        input[type="radio"] { margin-right: 10px; transform: scale(1.2); }
-        .btn { display: block; width: 100%; padding: 15px; color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; font-weight: bold; margin-top: 20px; }
-        #submit-btn { background: var(--secondary); }
-        #reveal-btn { background: var(--error); margin-top: 10px; }
-        .btn:disabled { background: #ccc !important; cursor: not-allowed; }
-        .result-msg { font-weight: bold; margin-top: 10px; display: none; padding: 5px; border-radius: 4px; }
-        .correct { background: #d4edda; color: var(--success); }
-        .wrong { background: #f8d7da; color: var(--error); }
-        #admin-panel { margin-top: 50px; padding: 20px; border: 2px dashed var(--error); border-radius: 10px; }
+        .options li { 
+            margin: 10px 0; 
+            padding: 10px; 
+            border: 1px solid #eee; 
+            border-radius: 10px;
+            transition: 0.2s;
+        }
+        .options li:hover { background: #f0f8ff; }
+
+        input[type="radio"] { 
+            margin-right: 10px; 
+            transform: scale(1.3); 
+            accent-color: var(--dark-brown);
+        }
+
+        .btn { 
+            display: block; 
+            width: 100%; 
+            padding: 15px; 
+            color: white; 
+            border: none; 
+            border-radius: 50px; 
+            font-size: 18px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            margin-top: 15px;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+        }
+
+        .btn-start { background: var(--dark-brown); font-size: 22px; }
+        #submit-btn { background: var(--dark-brown); }
+        #reveal-btn { background: var(--error); }
+        .btn:disabled { background: #ccc !important; box-shadow: none; }
+
+        .result-tag { font-weight: bold; margin-top: 10px; display: none; padding: 10px; border-radius: 10px; }
+        .correct { background: #d4edda; color: var(--success); border: 1px solid var(--success); }
+        .wrong { background: #f8d7da; color: var(--error); border: 1px solid var(--error); }
+
+        .admin-box { 
+            margin-top: 60px; 
+            padding: 20px; 
+            border: 3px dotted var(--error); 
+            border-radius: 15px; 
+            background: #fffafa;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>S6 English Reading Quiz</h1>
-    <div id="quiz-container"></div>
+    <h1>🐻 S6 English Reading Quiz 🐺</h1>
 
-    <button id="submit-btn" class="btn" onclick="lockQuiz()">Submit Answers</button>
-    <p id="msg" style="display:none; text-align:center; color:var(--success); font-weight:bold;">Answers Recorded! Waiting for Teacher...</p>
+    <div id="welcome-screen">
+        <p style="font-size: 20px; font-weight: bold;">Hello Students!</p>
+        <p>Are you ready for the 40-question Reading Comprehension challenge?</p>
+        <button class="btn btn-start" onclick="startQuiz()">Start Quiz Now</button>
+    </div>
 
-    <div id="admin-panel">
-        <strong style="color:var(--error)">Teacher Control Panel</strong>
-        <button id="reveal-btn" class="btn" onclick="revealAnswers()">Reveal Correct Answers</button>
+    <div id="quiz-content">
+        <div id="quiz-list"></div>
+        <button id="submit-btn" class="btn" onclick="submit()">Submit All Answers</button>
+        
+        <div id="msg" style="display:none; text-align:center; color:var(--success); font-weight:bold; margin-top:20px;">
+            <p style="font-size: 24px;">✔ Done!</p>
+            <p>Your answers are safe with me.<br>Wait for your teacher to reveal the results!</p>
+        </div>
+
+        <div class="admin-box">
+            <p style="color:var(--error); font-weight:bold; margin:0; text-align:center;">Teacher's Magic Button</p>
+            <button id="reveal-btn" class="btn" onclick="reveal()">Reveal All Answers</button>
+        </div>
     </div>
 </div>
 
 <script>
-    [span_0](start_span)[span_1](start_span)// 整合自 20260309-111.pdf 及 20260309.pdf 的 40 題內容[span_0](end_span)[span_1](end_span)
-    const questions = [
-        // Part 1: Environmental & Social (1-20)
-        [span_2](start_span){ q: "What is the main benefit of using solar power?", a: "B", opts: ["To increase electricity bills", "To reduce the negative impact on nature", "To build more factories"] }, //[span_2](end_span)
-        [span_3](start_span){ q: "What should businesses do besides making a profit?", a: "B", opts: ["Sell more coffee", "Help the community", "Close the shop early"] }, //[span_3](end_span)
-        [span_4](start_span){ q: "Why are investors choosing 'green' companies?", a: "B", opts: ["Produce more waste", "Care about the Earth's future", "Recycling is expensive"] }, //[span_4](end_span)
-        [span_5](start_span){ q: "What does ethical labor ensure for workers?", a: "B", opts: ["Lower pay", "Fair pay and safety", "Long working hours"] }, //[span_5](end_span)
-        [span_6](start_span){ q: "Why is paper packaging better than plastic?", a: "B", opts: ["More colorful", "Breaks down faster and safer for animals", "Harder to carry"] }, //[span_6](end_span)
-        [span_7](start_span){ q: "How does remote work help the environment?", a: "B", opts: ["Increasing office space", "Reducing air pollution from traveling", "Working longer"] }, //[span_7](end_span)
-        [span_8](start_span){ q: "What is one positive effect of AI in healthcare?", a: "B", opts: ["Replacing humans", "Improving efficiency", "Making data harder"] }, //[span_8](end_span)
-        [span_9](start_span){ q: "Why is digital literacy important?", a: "B", opts: ["Buy more gadgets", "Stay safe online", "Play games"] }, //[span_9](end_span)
-        [span_10](start_span){ q: "What happens if e-waste is not recycled correctly?", a: "B", opts: ["Turns to gold", "Chemicals leak into soil", "Devices work again"] }, //[span_10](end_span)
-        [span_11](start_span){ q: "How do smart cities save energy?", a: "B", opts: ["All lights off", "Sensors to control street lights", "More roads"] }, //[span_11](end_span)
-        [span_12](start_span){ q: "Who does fair trade mainly help?", a: "B", opts: ["Supermarket owners", "Farmers in developing countries", "Factory workers"] }, //[span_12](end_span)
-        [span_13](start_span){ q: "What are schools encouraging students to do for mental health?", a: "B", opts: ["Hide stress", "Talk about feelings", "No breaks"] }, //[span_13](end_span)
-        [span_14](start_span){ q: "What is one benefit of urban gardening?", a: "B", opts: ["Hotter buildings", "Fresh food for city dwellers", "Takes too much space"] }, //[span_14](end_span)
-        [span_15](start_span){ q: "What is a result of having a diverse team?", a: "A", opts: ["More creative ideas", "More arguments", "Fewer people"] }, //[span_15](end_span)
-        [span_16](start_span){ q: "Why use public transportation?", a: "B", opts: ["More traffic", "Reduce CO2 and traffic", "Always faster"] }, //[span_16](end_span)
-        [span_17](start_span){ q: "What is a problem caused by fast fashion?", a: "B", opts: ["Too expensive", "Water pollution", "Lasts 20 years"] }, //[span_17](end_span)
-        [span_18](start_span){ q: "How can reducing food waste help?", a: "B", opts: ["Fill landfills", "Feed hungry people", "More expensive"] }, //[span_18](end_span)
-        [span_19](start_span){ q: "Why are renewable resources better than coal?", a: "B", opts: ["More smoke", "Never run out and cleaner", "Older than oil"] }, //[span_19](end_span)
-        [span_20](start_span){ q: "Result of good corporate governance?", a: "A", opts: ["Builds public trust", "Selfish leaders", "Secretive company"] }, //[span_20](end_span)
-        [span_21](start_span){ q: "Main goal of zero-waste lifestyle?", a: "B", opts: ["More plastic bags", "Send nothing to trash", "Drink more water"] }, //[span_21](end_span)
+const questions = [
+    // PDF 1 (1-20)
+    { q: "What is the main benefit of using solar power?", a: "B", opts: ["Increase electricity bills", "Reduce negative impact on nature", "Build more factories"] },
+    { q: "What should businesses do besides making a profit?", a: "B", opts: ["Sell more coffee", "Help the community", "Close shop early"] },
+    { q: "Why are investors choosing 'green' companies?", a: "B", opts: ["Produce more waste", "Care about Earth's future", "Recycling is expensive"] },
+    { q: "What does ethical labor ensure for workers?", a: "B", opts: ["Lower pay", "Fair pay and safety", "Long working hours"] },
+    { q: "Why is paper packaging better than plastic?", a: "B", opts: ["More colorful", "Breaks down faster/safer for animals", "Harder to carry"] },
+    { q: "How does remote work help the environment?", a: "B", opts: ["Increase office space", "Reduce air pollution from travel", "Work longer"] },
+    { q: "What is one positive effect of AI in healthcare?", a: "B", opts: ["Replacing humans", "Improving efficiency", "Harder data"] },
+    { q: "Why is digital literacy important?", a: "B", opts: ["Buy gadgets", "Stay safe online", "Play games"] },
+    { q: "What happens if e-waste is not recycled correctly?", a: "B", opts: ["Turns to gold", "Chemicals leak into soil", "Devices work again"] },
+    { q: "How do smart cities save energy?", a: "B", opts: ["Lights off", "Sensors for street lights", "More roads"] },
+    { q: "Who does fair trade mainly help?", a: "B", opts: ["Owners", "Farmers in developing countries", "Factory workers"] },
+    { q: "What are schools encouraging for mental health?", a: "B", opts: ["Hide stress", "Talk about feelings", "No breaks"] },
+    { q: "One benefit of urban gardening?", a: "B", opts: ["Hotter buildings", "Fresh food for cities", "Too much space"] },
+    { q: "Result of a diverse team?", a: "A", opts: ["More creative ideas", "More arguments", "Fewer people"] },
+    { q: "Why use public transportation?", a: "B", opts: ["More traffic", "Reduce CO2 and traffic", "Faster than car"] },
+    { q: "Problem caused by fast fashion?", a: "B", opts: ["Too expensive", "Water pollution", "Lasts 20 years"] },
+    { q: "How does reducing food waste help?", a: "B", opts: ["Fill landfills", "Feed hungry people", "More expensive"] },
+    { q: "Why are renewable resources better than coal?", a: "B", opts: ["More smoke", "Never run out and cleaner", "Older than oil"] },
+    { q: "Result of good corporate governance?", a: "A", opts: ["Builds trust", "Selfish leaders", "Secretive"] },
+    { q: "Goal of zero-waste lifestyle?", a: "B", opts: ["More plastic", "Send nothing to trash", "Drink water"] },
+    // PDF 2 (21-40)
+    { q: "Primary purpose of carbon sequestration?", a: "B", opts: ["Release CO2", "Store harmful gases underground", "Reduce cost", "Replace renewables"] },
+    { q: "Potential downside of electric vehicles?", a: "C", opts: ["Faster", "No support", "Mining materials for batteries", "Not popular"] },
+    { q: "How does AI assist teachers?", a: "C", opts: ["Replacing them", "Harder tasks", "Handling routine tasks like grading", "Less study"] },
+    { q: "Why microplastics are a threat to humans?", a: "B", opts: ["Salty water", "Consumed through seafood", "Block ships", "Deep water"] },
+    { q: "Major advantage of vertical farming?", a: "C", opts: ["LED cost", "Rural only", "Reduces water consumption", "Cheaper"] },
+    { q: "What does 'corporate transparency' involve?", a: "B", opts: ["Hiding losses", "Sharing eco/social info", "Increase price", "Hiring overseas"] },
+    { q: "Example of 'Social' in ESG?", a: "C", opts: ["Reduce energy", "Board changes", "Gender pay equality", "New factory"] },
+    { q: "Why ethical sourcing for tech brands?", a: "B", opts: ["Cheap materials", "Avoid protests", "Speed up", "Child labor"] },
+    { q: "Main characteristic of greenwashing?", a: "B", opts: ["Helping nature", "False eco claims", "Green water", "Lower price"] },
+    { q: "Goal of sustainable tourism?", a: "B", opts: ["Max tourists", "Protect for future", "Luxury resorts", "No travel"] },
+    { q: "Disadvantage of gig economy?", a: "B", opts: ["Flexibility", "Lack of job benefits", "Same office", "High taxes"] },
+    { q: "Why workplace wellness?", a: "B", opts: ["Long hours", "Reduce turnover/increase productivity", "Save furniture", "Replace insurance"] },
+    { q: "What does digital divide lead to?", a: "B", opts: ["Faster internet", "Unfairness in education/employment", "Expensive PCs", "Less shopping"] },
+    { q: "Effect of aging population?", a: "C", opts: ["Surplus of youth", "Less hospitals", "Increased healthcare demand", "Lower taxes"] },
+    { q: "Minimalist solution to overconsumption?", a: "B", opts: ["Buy online", "Fewer but better items", "Throw all", "More ads"] },
+    { q: "Hidden cost of fast fashion?", a: "B", opts: ["High price", "Environmental damage", "Shipping", "Salaries"] },
+    { q: "What is 'intermittency' problem?", a: "C", opts: ["Expensive", "Panels big", "Sources not always available", "Dislike turbines"] },
+    { q: "Why is biodiversity important?", a: "B", opts: ["Tourists", "Ecosystem stays strong", "Palm oil", "Prevent death"] },
+    { q: "Main conflict in tech responsibility?", a: "B", opts: ["Profit vs Tech", "Monitoring vs Free speech", "Big vs Small", "Misinfo vs Ads"] },
+    { q: "What are 'soft skills'?", a: "B", opts: ["Coding", "Interpersonal/teamwork", "Physical", "Software"] }
+];
 
-        // Part 2: Advanced Topics (21-40)
-        [span_22](start_span){ q: "Primary purpose of carbon sequestration?", a: "B", opts: ["Release CO2", "Store harmful gases underground", "Reduce cost", "Replace renewables"] }, //[span_22](end_span)
-        [span_23](start_span){ q: "Potential downside of electric vehicles?", a: "C", opts: ["Faster cars", "No government support", "Mining materials for batteries", "Not popular"] }, //[span_23](end_span)
-        [span_24](start_span){ q: "How does AI assist teachers?", a: "C", opts: ["Replacing them", "Harder exercises", "Handling routine tasks like grading", "Less study"] }, //[span_24](end_span)
-        [span_25](start_span){ q: "Why are microplastics a threat to humans?", a: "B", opts: ["Salty water", "Consumed through seafood", "Block ships", "Deep water only"] }, //[span_25](end_span)
-        [span_26](start_span){ q: "Major advantage of vertical farming?", a: "C", opts: ["LED costs", "Rural only", "Reduces water consumption", "Cheaper overall"] }, //[span_26](end_span)
-        [span_27](start_span){ q: "What does corporate transparency involve?", a: "B", opts: ["Hiding losses", "Sharing eco/social info", "Increase share price", "Hiring overseas"] }, //[span_27](end_span)
-        [span_28](start_span){ q: "Example of 'Social' in ESG?", a: "C", opts: ["Reduce electricity", "Board changes", "Gender pay equality", "New factory"] }, //[span_28](end_span)
-        [span_29](start_span){ q: "Why ethical sourcing for tech brands?", a: "B", opts: ["Cheapest materials", "Avoid protests/negative reaction", "Speed up production", "Child labor"] }, //[span_29](end_span)
-        [span_30](start_span){ q: "Main characteristic of greenwashing?", a: "B", opts: ["Helping nature", "False eco claims", "Green water", "Lower food price"] }, //[span_30](end_span)
-        [span_31](start_span){ q: "Goal of sustainable tourism?", a: "B", opts: ["Max tourists", "Protect for future", "Luxury resorts", "Discourage travel"] }, //[span_31](end_span)
-        [span_32](start_span){ q: "Disadvantage of gig economy?", a: "B", opts: ["Too flexible", "Lack of job benefits", "Same office", "High taxes"] }, //[span_32](end_span)
-        [span_33](start_span){ q: "Why invest in workplace wellness?", a: "B", opts: ["Longer hours", "Reduce turnover/increase productivity", "Save furniture", "Replace insurance"] }, //[span_33](end_span)
-        [span_34](start_span){ q: "What does digital divide lead to?", a: "B", opts: ["Faster internet", "Unfairness in education/employment", "Expensive PCs", "Less shopping"] }, //[span_34](end_span)
-        [span_35](start_span){ q: "One effect of aging population?", a: "C", opts: ["Surplus of youth", "Less hospital pressure", "Increased healthcare demand", "Lower taxes"] }, //[span_35](end_span)
-        [span_36](start_span){ q: "Minimalist solution to overconsumption?", a: "B", opts: ["Buy online", "Fewer but better items", "Throw everything", "More ads"] }, //[span_36](end_span)
-        [span_37](start_span){ q: "Hidden cost of fast fashion?", a: "B", opts: ["High price", "Environmental damage", "Shipping cost", "Designer salary"] }, //[span_37](end_span)
-        [span_38](start_span){ q: "What is the 'intermittency' problem?", a: "C", opts: ["Too expensive", "Panels too big", "Sources not always available", "Dislike turbines"] }, //[span_38](end_span)
-        [span_39](start_span){ q: "Why is biodiversity important?", a: "B", opts: ["Tourists", "Helps ecosystem stay strong", "Palm oil", "Prevent animal death"] }, //[span_39](end_span)
-        [span_40](start_span){ q: "Main conflict in tech responsibility?", a: "B", opts: ["Profit vs Tech", "Monitoring vs Free speech", "Big vs Small biz", "Misinfo vs Ads"] }, //[span_40](end_span)
-        [span_41](start_span){ q: "What are 'soft skills'?", a: "B", opts: ["Coding", "Interpersonal/teamwork", "Physical", "Software use"] } //[span_41](end_span)
-    ];
+function startQuiz() {
+    document.getElementById('welcome-screen').style.display = 'none';
+    document.getElementById('quiz-content').style.display = 'block';
+    renderQuiz();
+}
 
-    const container = document.getElementById('quiz-container');
-
-    // 渲染題目
+function renderQuiz() {
+    const list = document.getElementById('quiz-list');
+    list.innerHTML = '';
     questions.forEach((item, i) => {
         const div = document.createElement('div');
         div.className = 'q-block';
         div.innerHTML = `
-            <p><strong>Q${i + 1}.</strong> ${item.q}</p>
+            <p><strong>Q${i+1}.</strong> ${item.q}</p>
             <ul class="options">
                 ${item.opts.map((opt, idx) => `
-                    <li>
-                        <label>
-                            <input type="radio" name="q${i}" value="${String.fromCharCode(65 + idx)}">
-                            ${String.fromCharCode(65 + idx)}. ${opt}
-                        </label>
-                    </li>
+                    <li><label><input type="radio" name="q${i}" value="${String.fromCharCode(65+idx)}"> ${String.fromCharCode(65+idx)}. ${opt}</label></li>
                 `).join('')}
             </ul>
-            <div id="res-${i}" class="result-msg"></div>
+            <div id="res-${i}" class="result-tag"></div>
         `;
-        container.appendChild(div);
+        list.appendChild(div);
     });
+}
 
-    // 學生提交功能
-    function lockQuiz() {
-        const selectedCount = document.querySelectorAll('input:checked').length;
-        if (selectedCount < questions.length) {
-            if(!confirm("You haven't answered all questions. Submit anyway?")) return;
+function submit() {
+    const answered = document.querySelectorAll('input:checked').length;
+    if(answered < questions.length) {
+        if(!confirm("You haven't finished all questions! Submit anyway?")) return;
+    }
+    document.querySelectorAll('input').forEach(i => i.disabled = true);
+    document.getElementById('submit-btn').style.display = 'none';
+    document.getElementById('msg').style.display = 'block';
+    window.scrollTo(0,0);
+}
+
+function reveal() {
+    questions.forEach((item, i) => {
+        const res = document.getElementById(`res-${i}`);
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        const userVal = selected ? selected.value : "None";
+        res.style.display = "block";
+        if(userVal === item.a) {
+            res.innerText = "✓ Correct!";
+            res.className = "result-tag correct";
+        } else {
+            res.innerText = "✗ Wrong! Answer: " + item.a;
+            res.className = "result-tag wrong";
         }
-        document.querySelectorAll('input').forEach(el => el.disabled = true);
-        document.getElementById('submit-btn').disabled = true;
-        document.getElementById('msg').style.display = 'block';
-        window.scrollTo(0, 0);
-        alert("Submitted! Please wait for your teacher to reveal the answers.");
-    }
-
-    // 老師公佈答案功能
-    function revealAnswers() {
-        questions.forEach((item, i) => {
-            const resDiv = document.getElementById(`res-${i}`);
-            const selected = document.querySelector(`input[name="q${i}"]:checked`);
-            const userAns = selected ? selected.value : "None";
-            
-            resDiv.style.display = "block";
-            if (userAns === item.a) {
-                resDiv.innerText = "✓ Correct!";
-                resDiv.className = "result-msg correct";
-            } else {
-                resDiv.innerText = `✗ Wrong! Correct Answer: ${item.a}`;
-                resDiv.className = "result-msg wrong";
-            }
-        });
-        alert("All answers have been revealed.");
-    }
+    });
+}
 </script>
-
 </body>
 </html>
